@@ -1,5 +1,6 @@
 import { error } from 'node:console';
 import http from 'node:http'
+import {url} from 'node:url'
 
 const porta = 3000
 
@@ -10,12 +11,18 @@ const tarefas = [
 
 const server = http.createServer((requisicao, resposta) => {
     resposta.setHeader('Content-Type', 'application/json')
+    const urlObj= new URL (requisição.url,`http://${requisiçao.heades.host}`)
 
     if (requisicao.method == 'GET' && requisicao.url == '/tarefas') {
         resposta.statusCode = 200
         resposta.end(JSON.stringify(tarefas))
 
-    } else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
+
+    }else if(requisicao.method== "GET" && urlObj.pathname== "/tarefas/busca"){
+        const nome= urlObj.searchParams.get('nome')
+        tarefas.filter(nome=> urlObj.searchParams.get('nome') )
+    
+    }else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
         let body = ''
 
         requisicao.on('data', (chunk) => {
