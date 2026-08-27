@@ -15,7 +15,7 @@ const server = http.createServer((requisicao, resposta) => {
         resposta.statusCode = 200
         resposta.end(JSON.stringify(tarefas))
 
-    } else if (requisicao.method == 'POST' && requisicao.url == '/tarefas') {
+    } else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
         let body = ''
 
         requisicao.on('data', (chunk) => {
