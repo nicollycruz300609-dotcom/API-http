@@ -1,6 +1,6 @@
 import { error } from 'node:console';
 import http from 'node:http'
-import {url} from 'node:url'
+import { url } from 'node:url'
 
 const porta = 3000
 
@@ -11,42 +11,46 @@ const tarefas = [
 
 const server = http.createServer((requisicao, resposta) => {
     resposta.setHeader('Content-Type', 'application/json')
-    const urlObj= new URL (requisição.url,`http://${requisiçao.heades.host}`)
+
+    const urlObj = new URL(
+        requisicao.url,
+        `http://${requisicao.headers.host}`
+    )
 
     if (requisicao.method == 'GET' && requisicao.url == '/tarefas') {
         resposta.statusCode = 200
         resposta.end(JSON.stringify(tarefas))
 
+    } else if (requisicao.method == "GET" && urlObj.pathname == "/tarefas/busca") {
+        const nome = urlObj.searchParams.get('nome')
 
-    }else if(requisicao.method== "GET" && urlObj.pathname== "/tarefas/busca"){
-        const nome= urlObj.searchParams.get('nome')
-        tarefas.filter(nome=> urlObj.searchParams.get('nome') )
+        tarefas.filter(nome => urlObj.searchParams.get('nome'))
 
-    
+    } else if (requisicao.method == "DELETE" && urlObj.pathname == "/tarefas") {
+        const index = urlObj.searchParams.get('index')
 
-    
-    }else if(requisicao.method== "DELETE" && urlObj.pathname== "/tarefas"{
-        const index= urlObj.searchParams.get('index');
-        tarefas.splice(index,1)
+        tarefas.splice(index, 1)
         tarefas.filter(index => urlObj.searchParams.get('index'))
-        respostas.statusCode== 200
-    })
-    
-    
-    else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
+
+        resposta.statusCode = 200
+
+    } else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
         let body = ''
 
         requisicao.on('data', (chunk) => {
             body += chunk.toString()
-        });
+        })
 
         requisicao.on('end', () => {
             try {
 
                 const novaTarefa = JSON.parse(body)
+
                 if (!novaTarefa.nome) {
                     resposta.statusCode = 400
-                    resposta.end(JSON.stringify({ error: "o campo 'nome' é obrigatório" }))
+                    resposta.end(JSON.stringify({
+                        error: "o campo 'nome' é obrigatório"
+                    }))
                 }
 
                 const tarefaCriada = {
@@ -55,24 +59,27 @@ const server = http.createServer((requisicao, resposta) => {
                 }
 
                 tarefas.push(tarefaCriada)
+
                 resposta.statusCode = 201
-                resposta.end(JSON.stringify(tarefaCriada));
+                resposta.end(JSON.stringify(tarefaCriada))
 
             } catch (error) {
                 resposta.statusCode = 400
-                resposta.end(JSON.stringify({ error: 'formato JSON invalido!' }))
-
+                resposta.end(JSON.stringify({
+                    error: 'formato JSON invalido!'
+                }))
             }
         })
 
-
     } else {
         resposta.statusCode = 400
-        resposta.end(JSON.stringify({ error: 'rota não encontada' }))
-    }
+        resposta.end(JSON.stringify({
+            error: 'rota não encontada'
+        }))
+    }// sim, o formato json esta adequado 
 
+})
 
-});
-server.listen(porta,()=>{
-    console.log('servidor funcionando na porta ${porta}')
+server.listen(porta, () => {
+    console.log(`servidor funcionando na porta ${porta}`)
 })
