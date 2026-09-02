@@ -21,8 +21,19 @@ const server = http.createServer((requisicao, resposta) => {
     }else if(requisicao.method== "GET" && urlObj.pathname== "/tarefas/busca"){
         const nome= urlObj.searchParams.get('nome')
         tarefas.filter(nome=> urlObj.searchParams.get('nome') )
+
     
-    }else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
+
+    
+    }else if(requisicao.method== "DELETE" && urlObj.pathname== "/tarefas"{
+        const index= urlObj.searchParams.get('index');
+        tarefas.splice(index,1)
+        tarefas.filter(index => urlObj.searchParams.get('index'))
+        respostas.statusCode== 200
+    })
+    
+    
+    else if (requisicao.method == 'POST' && requisicao.url == '/tarefa') {
         let body = ''
 
         requisicao.on('data', (chunk) => {
